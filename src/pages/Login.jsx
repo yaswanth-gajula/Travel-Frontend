@@ -3,12 +3,28 @@ import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import "../App.css";
 
+const DEMO_CREDENTIALS = {
+  username: "demo",
+  password: "travel123",
+};
+
 export default function Login() {
   const [form, setForm] = useState({ username: "", password: "" });
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
     e.preventDefault();
+
+    if (
+      form.username === DEMO_CREDENTIALS.username &&
+      form.password === DEMO_CREDENTIALS.password
+    ) {
+      localStorage.setItem("token", "demo-token");
+      localStorage.setItem("username", DEMO_CREDENTIALS.username);
+      navigate("/dashboard");
+      return;
+    }
+
     try {
       const res = await axios.post("http://localhost:8081/auth/login", form);
       localStorage.setItem("token", res.data);
@@ -30,6 +46,7 @@ export default function Login() {
                  onChange={(e) => setForm({ ...form, password: e.target.value })} required />
           <button type="submit">Login</button>
         </form>
+        <p>Demo login: <strong>demo</strong> / <strong>travel123</strong></p>
         <p>New traveler? <Link to="/signup">Register here</Link></p>
       </div>
     </div>
